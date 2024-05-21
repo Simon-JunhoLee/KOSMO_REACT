@@ -1,6 +1,8 @@
 .App {
   text-align: center;
-  margin-top: 50px;
+  margin-top: 5%;
+  padding-right: 10%;
+  padding-left: 10%;
 }
 
 .App-logo {
@@ -46,4 +48,12 @@
 
 * {
   font-family: "Jua-Regular";
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
