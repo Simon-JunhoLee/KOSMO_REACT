@@ -44,3 +44,10 @@
   }
 }
 
+.bookSearch img {
+  cursor: pointer;
+}
+
+.login-text {
+  width: 100px;
+}

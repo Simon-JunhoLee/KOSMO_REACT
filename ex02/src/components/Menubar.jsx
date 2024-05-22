@@ -6,8 +6,31 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import RouterPage from './RouterPage';
+import { useNavigate } from 'react-router-dom';
+import swal from 'sweetalert';
 
 const Menubar = () => {
+const navi = useNavigate();
+const onLogout = (e) => {
+    e.preventDefault();
+    swal({
+        title: "로그아웃하시겠습니까?",
+        text: "",
+        icon: "warning",
+        buttons: true,
+        dangerMode: false,
+      })
+      .then((willLogout) => {
+        if (willLogout) {
+          sessionStorage.clear();
+          navi('/');
+        } else {
+          return;
+        }
+      });
+}
+
+
   return (
     <>
         <Navbar expand="lg" className="bg-body-tertiary mb-5" bg="dark" data-bs-theme="dark">
@@ -23,9 +46,20 @@ const Menubar = () => {
                 <Nav.Link href="/book/search">도서검색</Nav.Link>
                 <Nav.Link href="/local/search">지역검색</Nav.Link>
             </Nav>
+            {sessionStorage.getItem('email') ? 
+            <>
             <Nav>
-                <Nav.Link href="#">로그인</Nav.Link>
+                <Nav.Link href="#">{sessionStorage.getItem('email')}</Nav.Link>
             </Nav>
+            <Nav>
+                <Nav.Link href="#" onClick={onLogout}>로그아웃</Nav.Link>
+            </Nav>
+            </>
+            :
+            <Nav>
+                <Nav.Link href="/user/login">로그인</Nav.Link>
+            </Nav>
+            }
             </Navbar.Collapse>
         </Container>
         </Navbar>
