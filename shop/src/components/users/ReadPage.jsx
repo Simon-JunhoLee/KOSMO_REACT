@@ -14,7 +14,7 @@ const ReadPage = () => {
         address2:''
     });
 
-    const {uname, phone, address1, address2} = form;
+    const {uname, phone, address1, address2, photo} = form;
 
     const callAPI = async () => {
         const url = `/users/read/${uid}`;
@@ -73,7 +73,7 @@ const ReadPage = () => {
                 <Card.Body className="p-0">
                     <Row>
                     <Col lg={5} className='ps-5 pt-5'>
-                        <ModalPhoto uid={uid} photo={form.photo} callAPI={callAPI}/>
+                        <ModalPhoto uid={uid} photo={photo} callAPI={callAPI}/>
                     </Col>
                     <Col lg={7}>
                         <div className="p-5">
