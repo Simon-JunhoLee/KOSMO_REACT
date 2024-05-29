@@ -55,8 +55,8 @@ const MenuPage = () => {
                 style={{ maxHeight: '100px' }}
                 navbarScroll>
                 <Nav.Link href="/">Home</Nav.Link>
-                <Nav.Link href="/book/search">도서검색</Nav.Link>
-                <Nav.Link href="/book/list">도서목록</Nav.Link>
+                <Nav.Link href="/books/search">도서검색</Nav.Link>
+                <Nav.Link href="/books/list">도서목록</Nav.Link>
             </Nav>
             {uid ?
             <>

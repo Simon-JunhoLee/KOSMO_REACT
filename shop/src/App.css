@@ -37,3 +37,12 @@
     border-radius: 50%;
     cursor: pointer;
 }
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+input[type="checkbox"]:checked {
+    background-color: black; /* Change to desired color */
+    border : none;
+}
