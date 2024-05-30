@@ -46,3 +46,19 @@ input[type="checkbox"]:checked {
     background-color: black; /* Change to desired color */
     border : none;
 }
+
+.updatePage .title{
+    width: 100px;
+}
+
+.updatePage img{
+    cursor: pointer;
+    width: 300px;
+    height: 390px;
+}
+
+.heart {
+    color: red;
+    cursor: pointer;
+    font-size: 13px;
+}

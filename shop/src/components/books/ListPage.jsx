@@ -1,31 +1,49 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Row, Col, InputGroup, Form, Alert } from 'react-bootstrap';
 import '../Paging.css';
 import Pagination from 'react-js-pagination';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 
 const ListPage = () => {
+    const [key, setKey] = useState('title');
+    const [word, setWord] = useState('');
+    const [loading, setLoading] = useState(false);
     const [chk, setChk] = useState(0);
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(5);
     const [total, setTotal] = useState(0);
     const [books, setBooks] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(()=>{
         let count = 0;
-        books.forEach(book => book.checked && count++);
+        books.map(book => book.checked && count++);
         setChk(count);
     }, [books])
     
     const callAPI = async() => {
-        const url = `/books/list?page=${page}&size=${size}`;
+        setLoading(true);
+        const url = `/books/list?page=${page}&size=${size}&key=${key}&word=${word}`;
         const res = await axios.get(url);
         const documents = res.data.documents;
-        setBooks(documents.map(book => book && { ...book, checked: false}));
+        if(documents){
+            setBooks(documents.map(book => book && { ...book, checked: false}));
+        }else{
+            setBooks([]);
+            Swal.fire({
+                title: "검색 결과 없음",
+                text: "검색된 결과가 없습니다.",
+                icon: "error",
+                confirmButtonColor: "black",
+                confirmButtonText: "확인"
+            });
+        }
         setTotal(res.data.total);
-        setBooks(documents);
-        console.log(total);
+        if(page > Math.ceil(res.data.total/size)) setPage(page-1);
+        // console.log(total);
+        setLoading(false);
     }
 
     useEffect(()=>{
@@ -88,7 +106,7 @@ const ListPage = () => {
             showCancelButton: true,
             confirmButtonColor: "black",
             cancelButtonColor: "gray",
-            confirmButtonText: "Save"
+            confirmButtonText: "Delete"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 // 선택한 도서들을 저장
@@ -124,12 +142,50 @@ const ListPage = () => {
         });
     }
 
+    const onSubmit = (e) => {
+        e.preventDefault();
+        setPage(1);
+        callAPI();
+    }
+
+    const onRowClick = (bid) => {
+        navigate(`/books/update/${bid}`); 
+    };
+
+    if(loading) return <h1 className='text-center my-5'>로딩중...</h1>
     return (
         <div className='my-5'>
             <h1 className='text-center mb-5'>도서목록</h1>
-            <div className='text-start mb-3'>
-                    <Button variant='dark' onClick={onDeleteChecked}>선택삭제</Button>
-            </div>
+            <Row className='mb-3'>
+                <Col className='col-5'>
+                    <form onSubmit={onSubmit}>
+                        <InputGroup>
+                            <Col className='col-4 me-3'>
+                                <Form.Select value={key} onChange={(e)=>setKey(e.target.value)}>
+                                    <option value="title">제목</option>
+                                    <option value="author">저자</option>
+                                    <option value="publisher">출판사</option>
+                                </Form.Select>
+                            </Col>
+                            <Col>
+                                <InputGroup>
+                                    <Form.Control placeholder='검색어' value={word} onChange={(e)=>setWord(e.target.value)}/>
+                                    <Button variant='dark' type='submit'>검색</Button>
+                                </InputGroup>
+                            </Col>
+                        </InputGroup>
+                    </form>
+                </Col>
+                <Col className='text-start mt-2'>
+                    검색수 : {total}건
+                </Col>
+                {total > 0 &&
+                <Col className='text-end'>
+                        <Button variant='dark' onClick={onDeleteChecked}>선택삭제</Button>
+                </Col>
+                }
+            </Row>
+            {total > 0 ?
             <Table hover>
                 <thead className='table-dark text-center'>
                     <tr>
@@ -145,11 +201,11 @@ const ListPage = () => {
                 </thead>
                 <tbody>
                     {books.map(book=>
-                        <tr className='text-center'>
+                        <tr className='text-center' key={book.bid}>
                             <td className='text-center'><input type="checkbox" checked={book.checked} className='form-check-input' onChange={(e) => onChangeSingle(e, book.bid)} /></td>
                             <td>{book.bid}</td>
                             <td className='text-end'><img src={book.image || 'http://via.placeholder.com/120x170'} width="40px" /></td>
-                            <td className='text-truncate'>{book.title}</td>
+                            <td className='text-truncate' onClick={() => onRowClick(book.bid)} style={{ cursor: 'pointer' }}>{book.title}</td>
                             <td>{book.fmtPrice}</td>
                             <td>{book.author || "-"}</td>
                             <td>{book.fmtDate}</td>
@@ -158,14 +214,24 @@ const ListPage = () => {
                     )}
                 </tbody>
             </Table>
-            <Pagination
-                activePage={page}
-                itemsCountPerPage={size}
-                totalItemsCount={total}
-                pageRangeDisplayed={5}
-                prevPageText={"‹"}
-                nextPageText={"›"}
-                onChange={(e)=>setPage(e)}/>
+            :
+            <div>
+                <Alert className='text-center' variant='secondary'>
+                <h5>검색결과가 없습니다.</h5>
+                </Alert>
+            </div>
+            }
+            {total > size &&
+            
+                <Pagination
+                    activePage={page}
+                    itemsCountPerPage={size}
+                    totalItemsCount={total}
+                    pageRangeDisplayed={5}
+                    prevPageText={"‹"}
+                    nextPageText={"›"}
+                    onChange={(e)=>setPage(e)}/>
+            }
         </div>
     )
 }
