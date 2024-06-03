@@ -49,5 +49,19 @@ alter table books add column bigImage varchar(200);
 
 create table likes(
 	uid varchar(20) not null,
-    
+    bid int not null,
+    regDate datetime default now(),
+    primary key(uid, bid),
+    foreign key(uid) references users(uid),
+    foreign key(bid) references books(bid)
 );
+
+select * from likes;
+
+/*도서별 좋아요 개수*/
+select *, date_format(regdate, '%Y-%m-%d') fmtDate, format(price, 0) fmtPrice, 
+(select count(*) from likes where books.bid = likes.bid) lcnt,
+(select count(*) from likes where books.bid = likes.bid and uid='jun') ucnt
+from books
+order by bid desc
+limit 0, 5;

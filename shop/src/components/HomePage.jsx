@@ -5,6 +5,7 @@ import Pagination from 'react-js-pagination';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import Swal from 'sweetalert2';
+import { LiaCommentSolid } from 'react-icons/lia';
 
 const HomePage = () => {
     const uid = sessionStorage.getItem('uid');
@@ -17,7 +18,7 @@ const HomePage = () => {
     const navigate = useNavigate();
     
     const onBookClick = (bid) => {
-        navigate(`/books/update/${bid}`); 
+        navigate(`/books/read/${bid}`); 
     };
 
     const onSubmit = (e) => {
@@ -33,6 +34,13 @@ const HomePage = () => {
             callAPI();
         }else{
             navigate('/users/login');
+        }
+    }
+
+    const onClickCancel = async(bid) => {
+        const res = await axios.post('/books/likes/delete', {bid, uid});
+        if(res.data.result == 1){
+          callAPI();
         }
     }
 
@@ -90,11 +98,18 @@ const HomePage = () => {
                                 <Row>
                                 <Col className='col-8' style={{fontSize:'13px'}}>{book.fmtPrice}원</Col>
                                 <Col className='text-end col-4'>
+                                <>
+                                    <LiaCommentSolid style={{fontSize:'15px'}}/>
+                                    <span style={{fontSize:'12px'}} className='me-2'>{book.rcnt}</span>
+                                </>  
                                     {book.ucnt === 0 ?
-                                        <GoHeart className='heart' onClick={()=>onClickLike(book.bid)} />
+                                        <div className='heart'>
+                                            <GoHeart className='heart' onClick={()=>onClickLike(book.bid)} />
+                                            <span> {book.lcnt}</span>
+                                        </div>
                                     :
                                         <div className='heart'>
-                                            <GoHeartFill/>
+                                            <GoHeartFill onClick={()=>onClickCancel(book.bid)}/>
                                             <span> {book.lcnt}</span>
                                         </div>
                                     }

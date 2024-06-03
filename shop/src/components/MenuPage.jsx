@@ -1,19 +1,20 @@
-import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import RouterPage from './RouterPage';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { FaCartShopping } from 'react-icons/fa6';
+import { Badge } from 'react-bootstrap';
+import { CountContext } from './CountContext';
 
 const MenuPage = () => {
+    const {count} = useContext(CountContext);
     const navi = useNavigate();
     const uid = sessionStorage.getItem('uid');
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState('');
 
     // session에 있는 uid를 통해 back-end의 read 기능 사용
     const callAPI = async() => {
@@ -60,6 +61,22 @@ const MenuPage = () => {
             </Nav>
             {uid ?
             <>
+            <Nav>
+                <Nav.Link href="/orders/cart" className='me-4 active'>
+                <div>
+                    {count == 0 ?
+                    <FaCartShopping style={{fontSize:'25px'}}/>
+                    :
+                    <>
+                    <FaCartShopping  style={{fontSize:'25px', position:'absolute'}}/>
+                    <Badge bg="danger" style={{ position: 'relative', top: '-10px', left:'20px'}}>
+                        <span>{count}</span>
+                    </Badge>
+                    </>
+                    }
+                </div>  
+                </Nav.Link>
+            </Nav>
             <Nav>
                 <Nav.Link href="/users/mypage" className='active'>{user.uname}님</Nav.Link>
             </Nav>
