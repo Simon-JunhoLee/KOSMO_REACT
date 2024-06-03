@@ -3,7 +3,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Row, Col, Table, Button, Alert } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { CountContext } from '../CountContext';
+import OrderPage from './OrderPage';
 const CartPage = () => {
+    const [isOrder, setIsOrder] = useState(false);
+    const [chk, setChk] = useState(0);
     const {setCount} = useContext(CountContext);
     const [total, setTotal] = useState(0);
     const [books, setBooks] = useState([]);
@@ -11,7 +14,7 @@ const CartPage = () => {
 
     const callAPI = async () => {
         const res = await axios.get(`/cart/list?uid=${uid}`);
-        const data = res.data.map(book=>book && {...book, sum:book.qnt*book.price});
+        const data = res.data.map(book=>book && {...book, sum:book.qnt*book.price, checked: false});
         setBooks(data);
         setCount(data.length);
 
@@ -72,14 +75,100 @@ const CartPage = () => {
         });
     }
 
+    useEffect(()=>{
+        let count = 0;
+        books.map(book => book.checked && count++);
+        setChk(count);
+    }, [books]);
+
+    const onChangeAll = (e) => {
+        const data = books.map(book => book && {...book, checked:e.target.checked});
+        setBooks(data);
+    }
+
+    const onChangeSingle = (e, bid) => {
+        setBooks(books.map(book => book.bid === bid ? { ...book, checked: e.target.checked } : book));
+    }
+
+    const onCheckedDelete = () => {
+        if(chk === 0){
+            Swal.fire({
+                title: "장바구니 삭제 오류",
+                text: "삭제할 도서를 선택하십시오.",
+                icon: "error"
+            });
+            return;
+        }
+        Swal.fire({
+            title: `"${chk}"개의 도서를 삭제하시겠습니까?`,
+            text: "",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "black",
+            cancelButtonColor: "gray",
+            confirmButtonText: "Delete"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // 선택한 도서들을 저장
+                let cnt = 0;
+                let deleted = 0;
+                books.forEach(async book=>{
+                    if(book.checked){
+                        const res = await axios.post('/cart/delete', {bid:book.bid, uid});
+                        cnt++;
+                        if (res.data.result === 1) {
+                            deleted++;
+                            if(cnt === chk){
+                                Swal.fire({
+                                    title: "도서 삭제 완료",
+                                    text: `${deleted} 개의 도서가 삭제되었습니다.`,
+                                    icon: "success"
+                                });
+                                callAPI();
+                            }
+                        } else {
+                            if(cnt === chk){
+                                Swal.fire({
+                                    title: "도서삭제 오류",
+                                    text: "선택된 도서는 이미 삭제된 도서입니다.",
+                                    icon: "error"
+                                });
+                                setBooks(books.map(book => book && { ...book, checked: false }));
+                            }
+                        }
+                    }
+                })
+            }
+        });
+    }
+
+    const onOrder = () => {
+        if(chk ===0){
+            Swal.fire({
+                title: "도서 주문 오류",
+                text: "주문할 도서를 선택하세요!",
+                icon: "error"
+            });
+        }else{
+            // 주문페이지로 이동
+            setIsOrder(true);
+        }
+    }
+
     return (
         <Row className='justify-content-center my-5'>
             <Col xs={12} md={12} lg={12}>
+                {!isOrder ? 
+                <>
                 <h1 className='text-center mb-5'>장바구니</h1>
+                <div className='mb-2'>
+                    <Button variant='dark' onClick={onCheckedDelete}>선택 도서 삭제</Button>
+                </div>
                 <Table hover className='mb-5'>
                     <colgroup>
+                        <col width="5%" />
                         <col width="10%" />
-                        <col width="45%" />
+                        <col width="40%" />
                         <col width="10%" />
                         <col width="15%" />
                         <col width="10%" />
@@ -87,6 +176,7 @@ const CartPage = () => {
                     </colgroup>
                     <thead className='table-dark'>
                         <tr className='text-center'>
+                            <td><input type="checkbox" className='form-check-input' onChange={onChangeAll} checked={chk === books.length}/></td>
                             <td>ID.</td>
                             <td>도서명</td>
                             <td>가격</td>
@@ -98,8 +188,9 @@ const CartPage = () => {
                     <tbody>
                         {books.map(book =>
                             <tr key={book.bid} className='text-center'>
+                                <td className='text-center'><input type="checkbox" checked={book.checked} className='form-check-input' onChange={(e) => onChangeSingle(e, book.bid)}/></td>
                                 <td>{book.bid}</td>
-                                <td className='text-start'>
+                                <td className='text-start text-truncate'>
                                     <img src={book.image} width="30px" />
                                     <span className='mx-2'>{book.title}</span>
                                 </td>
@@ -115,6 +206,14 @@ const CartPage = () => {
                     </tbody>
                 </Table>
                 <Alert className='text-end' variant='dark'>총합계: {total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원</Alert>
+                <div className='text-center mt-5'>
+                    <Button variant='dark' className='me-3' style={{width:'150px'}} onClick={onOrder}>주문하기</Button>
+                    <a href="/"><Button variant='secondary' style={{width:'150px'}}>쇼핑 계속하기</Button></a>
+                </div>
+                </>
+                :
+                <OrderPage books={books} setBooks={setBooks}/>
+                }
             </Col>
         </Row>
     )

@@ -10,19 +10,18 @@ import { CountContext } from './components/CountContext';
 
 
 function App() {
-    const uid = sessionStorage.getItem('uid');
     const [count, setCount] = useState(0);
-    const CallAPICount = async () => {
-        const res = await axios.get(`/cart/list?uid=${uid}`)
+    const callAPICount = async () => {
+        const res = await axios.get(`/cart/list?uid=${sessionStorage.getItem('uid')}`)
         setCount(res.data.length);
     }
 
     useEffect(()=>{
-        CallAPICount();
-    }, [])
+        callAPICount();
+    }, []);
 
     return (
-        <CountContext.Provider value={{count, setCount}}>
+        <CountContext.Provider value={{count, setCount, callAPICount}}>
             <Container>
                 <TopPage />
                 <MenuPage />

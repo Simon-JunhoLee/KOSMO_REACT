@@ -88,6 +88,20 @@ const ReadPage = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 window.location.href='/orders/cart';
+            }else{
+                Swal.fire({
+                    title: "쇼핑을 계속하시겠습니까?",
+                    text: "",
+                    icon: icon,
+                    showCancelButton: true,
+                    confirmButtonColor: "black",
+                    cancelButtonColor: "gray",
+                    confirmButtonText: "확인"
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        window.location.href='/';
+                    }
+                });
             }
         });
     };

@@ -1,10 +1,12 @@
 import axios from 'axios';
-import React, { useState } from 'react'
-import { InputGroup, Form, Button, Card, Col, Row } from 'react-bootstrap' 
+import React, { useContext, useState } from 'react'
+import { Form, Button, Card, Col, Row } from 'react-bootstrap' 
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
+import { CountContext } from '../CountContext';
 
 const LoginPage = () => {
+    const {callAPICount} = useContext(CountContext);
     const navi = useNavigate();
 
     const [form, setForm] = useState({
@@ -46,7 +48,12 @@ const LoginPage = () => {
               });
         }else if(result === 1){
             sessionStorage.setItem('uid', uid);
-            navi('/');
+            callAPICount();
+            if(sessionStorage.getItem('target')){
+                navi(sessionStorage.getItem('target'));
+            }else{
+                navi('/');
+            }
         }
     }
 

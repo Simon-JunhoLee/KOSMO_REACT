@@ -63,8 +63,7 @@ const MenuPage = () => {
             <>
             <Nav>
                 <Nav.Link href="/orders/cart" className='me-4 active'>
-                <div>
-                    {count == 0 ?
+                    {count === 0 ?
                     <FaCartShopping style={{fontSize:'25px'}}/>
                     :
                     <>
@@ -74,7 +73,6 @@ const MenuPage = () => {
                     </Badge>
                     </>
                     }
-                </div>  
                 </Nav.Link>
             </Nav>
             <Nav>

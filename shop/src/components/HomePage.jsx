@@ -49,7 +49,7 @@ const HomePage = () => {
         // console.log(res.data);
         const documents = res.data.documents;
         setBooks(documents);
-        setTotal(res.data.total)
+        setTotal(res.data.total);
     }
 
     useEffect(()=>{
@@ -96,23 +96,18 @@ const HomePage = () => {
                             <Card.Footer>
                                 <div className='text-truncate'>{book.title}</div>
                                 <Row>
-                                <Col className='col-8' style={{fontSize:'13px'}}>{book.fmtPrice}원</Col>
-                                <Col className='text-end col-4'>
+                                <Col className='text-start col-6 mt-1' style={{fontSize:'13px'}}>{book.fmtPrice}원</Col>
+                                <Col className='text-end col-6'>
                                 <>
                                     <LiaCommentSolid style={{fontSize:'15px'}}/>
-                                    <span style={{fontSize:'12px'}} className='me-2'>{book.rcnt}</span>
+                                    <span style={{fontSize:'13px'}} className='me-2'> {book.rcnt}</span>
                                 </>  
                                     {book.ucnt === 0 ?
-                                        <div className='heart'>
-                                            <GoHeart className='heart' onClick={()=>onClickLike(book.bid)} />
-                                            <span> {book.lcnt}</span>
-                                        </div>
+                                        <GoHeart className='heart' onClick={()=>onClickLike(book.bid)} />
                                     :
-                                        <div className='heart'>
-                                            <GoHeartFill onClick={()=>onClickCancel(book.bid)}/>
-                                            <span> {book.lcnt}</span>
-                                        </div>
+                                        <GoHeartFill className='heart' onClick={()=>onClickCancel(book.bid)}/>
                                     }
+                                        <span className='heart'> {book.lcnt}</span>
                                 </Col>
                                 </Row>
                             </Card.Footer>

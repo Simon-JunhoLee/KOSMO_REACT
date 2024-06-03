@@ -21,7 +21,7 @@ const ListPage = () => {
         let count = 0;
         books.map(book => book.checked && count++);
         setChk(count);
-    }, [books])
+    }, [books]);
     
     const callAPI = async() => {
         setLoading(true);
@@ -109,7 +109,7 @@ const ListPage = () => {
             confirmButtonText: "Delete"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                // 선택한 도서들을 저장
+                // 선택한 도서들을 삭제
                 let cnt = 0;
                 let deleted = 0;
                 books.forEach(async book=>{
@@ -121,7 +121,7 @@ const ListPage = () => {
                             if(cnt === chk){
                                 Swal.fire({
                                     title: "도서삭제 완료",
-                                    text: `${deleted} 개의 도서가 저장되었습니다.`,
+                                    text: `${deleted} 개의 도서가 삭제되었습니다.`,
                                     icon: "success"
                                 });
                                 callAPI();
