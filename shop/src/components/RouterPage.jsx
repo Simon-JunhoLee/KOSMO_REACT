@@ -8,6 +8,8 @@ import ListPage from './books/ListPage'
 import UpdatePage from './books/UpdatePage'
 import BookReadPage from './books/ReadPage'
 import CartPage from './orders/CartPage'
+import OrderList from './orders/OrderList'
+import AdminRouter from './admin/AdminRouter'
 
 const RouterPage = () => {
   return (
@@ -20,6 +22,8 @@ const RouterPage = () => {
         <Route path='/books/update/:bid' element={<UpdatePage/>}></Route>
         <Route path='/books/read/:bid' element={<BookReadPage/>}/>
         <Route path='/orders/cart' element={<CartPage/>}/>
+        <Route path='/orders/list' element={<OrderList/>}/>
+        <Route path='/admin/*' element={<AdminRouter/>}/>  {/* 관리자 경로를 AdminRouter로 라우팅 */}
     </Routes>
   )
 }

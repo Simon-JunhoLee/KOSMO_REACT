@@ -61,12 +61,12 @@ const OrderPage = ({ books, setBooks }) => {
                     ...form, sum:total, pid, uid
                 });
                 if(res.data.result === 1){
+                    let cnt = 0;
                     books.forEach(async book=>{
-                        const res = await axios.post('/orders/insert', {
-                            pid, bid:book.bid, price:book.price, qnt:book.qnt
-                        });
-                        if(res.data.result === 1){
-                            await axios.post('/cart/delete', {uid, bid:book.bid});
+                        await axios.post('/orders/insert', {pid, bid:book.bid, price:book.price, qnt:book.qnt});
+                        await axios.post('/cart/delete', {uid, bid:book.bid});
+                        cnt++;
+                        if(cnt === books.length){
                             Swal.fire({
                                 title: "주문이 완료되었습니다.",
                                 text: "",

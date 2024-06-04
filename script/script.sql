@@ -105,6 +105,8 @@ create table cart(
 
 desc cart;
 
+select * from cart;
+
 create view view_cart as
 select c.*, b.title, b.image, b.price, format(b.price, 0) fmtPrice
 from cart c, books b
@@ -127,6 +129,7 @@ create table purchase(
 );
 
 select * from purchase;
+delete from purchase where pid>'';
 
 /*주문상품 정보*/
 create table orders(
@@ -138,3 +141,5 @@ create table orders(
     foreign key(pid) references purchase(pid),
     foreign key(bid) references books(bid)
 );
+
+select * from orders;
