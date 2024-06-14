@@ -69,6 +69,13 @@ const ListPage = () => {
                 }
             </Row>
             <Table hover>
+                <colgroup>
+                    <col width="10%" />
+                    <col width="45%" />
+                    <col width="15%" />
+                    <col width="20%" />
+                    <col width="10%" />
+                </colgroup>
                 <thead className='table-dark text-center'>
                     <tr>
                         <td>ID</td>
@@ -82,7 +89,9 @@ const ListPage = () => {
                     {list.map(bbs =>
                         <tr key={bbs.bid} className='text-center'>
                             <td>{bbs.bid}</td>
-                            <td className='text-truncate' onClick={() => onRowClick(bbs.bid)} style={{ cursor: 'pointer' }}>{bbs.title} ({bbs.replyCnt})</td>
+                            <td onClick={() => onRowClick(bbs.bid)} style={{ cursor: 'pointer' }}>
+                                <div className='ellipsis'>{bbs.title} ({bbs.replyCnt})</div>
+                            </td>
                             <td>{bbs.uname}({bbs.uid})</td>
                             <td>{bbs.fmtDate}</td>
                             <td>{bbs.viewCnt}</td>
