@@ -8,6 +8,7 @@ import Swal from 'sweetalert2'
 const MenuPage = () => {
     const uid = sessionStorage.getItem('uid');
     const uname = sessionStorage.getItem('uname');
+    const photo = sessionStorage.getItem('photo') && `/display?file=${sessionStorage.getItem('photo')}`;
 
     const onLogout = (e) => {
         e.preventDefault();
@@ -33,7 +34,10 @@ const MenuPage = () => {
             <Link to="/bbs/list" className='me-3'>게시판</Link>
             {uid ? 
                 <> 
-                    <Link to="/users/read" className='me-3'>{uname}님</Link>
+                    <Link to="/users/read" className='me-3'>
+                        <img src={photo || 'http://via.placeholder.com'} width="30px" style={{borderRadius:'50%'}}/>
+                        {uname}님
+                    </Link>
                     <Link to="#" onClick={onLogout}>로그아웃</Link>
                 </>
                 :

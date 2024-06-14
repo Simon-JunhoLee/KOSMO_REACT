@@ -42,6 +42,7 @@ const LoginPage = () => {
             }).then(() => {
                 sessionStorage.setItem('uid', res.data.uid);
                 sessionStorage.setItem('uname', res.data.uname);
+                sessionStorage.setItem('photo', res.data.photo);
                 if(sessionStorage.getItem('target')){
                     window.location.href=sessionStorage.getItem('target');
                 }else{
