@@ -4,6 +4,8 @@ import HomePage from './HomePage'
 import BBSRouter from './router/BBSRouter'
 import UserRouter from './router/UserRouter'
 import Swal from 'sweetalert2'
+import MessageRouter from './router/MessageRouter'
+import MessagePage from './message/MessagePage'
 
 const MenuPage = () => {
     const uid = sessionStorage.getItem('uid');
@@ -34,6 +36,7 @@ const MenuPage = () => {
             <Link to="/bbs/list" className='me-3'>게시판</Link>
             {uid ? 
                 <> 
+                    <Link to="/message" className='me-3'>메시지</Link>
                     <Link to="/users/read" className='me-3'>
                         <img src={photo || 'http://via.placeholder.com'} width="30px" style={{borderRadius:'50%'}}/>
                         {uname}님
@@ -50,6 +53,7 @@ const MenuPage = () => {
                 <Route path='/' element={<HomePage/>}/>
                 <Route path='/bbs/*' element={<BBSRouter/>}/>
                 <Route path='/users/*' element={<UserRouter/>}/>
+                <Route path='/message/*' element={<MessagePage/>}/>
             </Routes>
         </div>
     )
