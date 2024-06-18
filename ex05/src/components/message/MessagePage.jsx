@@ -15,6 +15,9 @@ const MessagePage = () => {
                 <div>
                     <a href="/message/send">보낸 메시지</a>
                 </div>
+                <div>
+                    <a href="/message/delete">휴지통</a>
+                </div>
             </Col>
             <Col>
                 <MessageRouter/>

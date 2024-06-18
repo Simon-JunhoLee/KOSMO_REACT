@@ -18,6 +18,14 @@ const LoginPage = () => {
 
     const onSubmit = async(e) => {
         e.preventDefault();
+        if(uid === "" || upass === "") {
+            Swal.fire({
+                title: "로그인 에러",
+                text: "아이디 혹은 패스워드를 입력해주세요!",
+                icon: "error"
+            });
+            return;
+        }
         const res = await axios.get(`/users/${uid}`);
         console.log(res.data);
         if(!res.data){

@@ -253,3 +253,36 @@ where bid > 0;
 
 update reply set rating=3 where rid > 0;
 
+update users set photo = null where uid > '';
+
+select * from users where uid = 'sang';
+update users set photo='/upload/photo/프로필.png' where uid='jun';
+
+alter table users add column point int default 0;
+
+create table messages(
+	mid int auto_increment primary key,
+    sender varchar(20) not null,
+    receiver varchar(20) not null,
+    message text,
+    sendDate datetime default now(),
+    readDate datetime,
+    foreign key(sender) references users(uid),
+    foreign key(receiver) references users(uid)
+);
+
+select * from messages;
+insert into messages(sender, receiver, message) values('jun', 'sang', '안녕하세요');
+update messages set readDate = now() where mid = 3;
+
+alter table messages add column sendDelete int default 0;
+alter table messages add column receiveDelete int default 0;
+
+desc messages;
+
+select m.*, u.uname
+from messages m, users u
+where (u.uid=m.receiver or u.uid=m.sender) and (receiveDelete=1 or sendDelete=1) and u.uid = 'jun'
+order by mid desc;
+
+update messages set receiveDelete=0 where mid>2;

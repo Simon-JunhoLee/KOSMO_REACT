@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const SendPage = () => {
     const [list, setList] = useState([]);
@@ -19,6 +20,28 @@ const SendPage = () => {
 
     const onChangeSingle = (e, mid) => {
         setList(list.map(msg => msg.mid === mid ? {...msg, checked:e.target.checked} : msg));
+    }
+
+    const onDelete = () => {
+        if(chk === 0){
+            Swal.fire({
+                title: "삭제할 메시지를 선택하세요!",
+                text: "",
+                icon: "error"
+            }).then(() => {
+                return;
+            });
+        }
+        let cnt = 0;
+        list.forEach(async(msg) => {
+            if(msg.checked){
+                await axios.post(`/message/send/delete/${msg.mid}`);
+                cnt++;
+            }
+            if(chk === cnt) {
+                callAPI();
+            }
+        });
     }
 
     useEffect(()=>{
@@ -42,11 +65,14 @@ const SendPage = () => {
     return (
         <div>
             <h1 className='text-center my-5'>보낸 메시지</h1>
+            <div className='mb-3'>
+                <Button variant='dark' onClick={onDelete}>선택 삭제</Button>
+            </div>
             <Table>
                 <thead>
                     <tr>
                         <td>
-                            <input type="checkbox" className='form-check-input' onChange={onChangeAll} checked={chk === list.length}/>
+                            <input type="checkbox" className='form-check-input' onChange={onChangeAll} checked={list.length > 0 && chk === list.length}/>
                         </td>
                         <td>받은이</td>
                         <td>내용</td>
@@ -63,7 +89,7 @@ const SendPage = () => {
                             <td>{msg.uname}({msg.receiver})</td>
                             <td>
                                 <div className='ellipsis' onClick={() => onRowClick(msg.mid)} style={{ cursor: 'pointer', whiteSpace:'pre-wrap'}}>
-                                    {msg.message}
+                                    [{msg.mid}] {msg.message}
                                 </div>
                             </td>
                             <td>{msg.sendDate}</td>

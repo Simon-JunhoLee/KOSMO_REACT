@@ -4,7 +4,6 @@ import HomePage from './HomePage'
 import BBSRouter from './router/BBSRouter'
 import UserRouter from './router/UserRouter'
 import Swal from 'sweetalert2'
-import MessageRouter from './router/MessageRouter'
 import MessagePage from './message/MessagePage'
 
 const MenuPage = () => {
