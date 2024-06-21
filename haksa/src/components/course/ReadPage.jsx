@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Button, Table } from 'react-bootstrap';
 import { useParams } from 'react-router-dom'
+import EnrollList from './EnrollList';
 
 const ReadPage = () => {
     const { lcode } = useParams();
@@ -10,7 +11,7 @@ const ReadPage = () => {
 
     const callAPI = async () => {
         const res = await axios.get(`/cou/${lcode}`);
-        console.log(res.data);
+        // console.log(res.data);
         setCourse(res.data);
     }
 
@@ -48,6 +49,7 @@ const ReadPage = () => {
                     </tbody>
                 </Table>
             </div>
+            <EnrollList lcode={lcode}/>
         </div>
     )
 }

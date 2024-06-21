@@ -131,7 +131,7 @@ const ListPage = () => {
                             </td>
                             <td>{stu.year}학년</td>
                             <td>{stu.dept}</td>
-                            {stu.pcode ?
+                            {stu.advisor ?
                             <td>{stu.pname}({stu.advisor})</td>
                             :
                             <td>-</td>
